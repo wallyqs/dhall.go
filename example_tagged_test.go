@@ -3,7 +3,7 @@ package dhall_test
 import (
 	"fmt"
 
-	"github.com/philandstuff/dhall-golang/v6"
+	"github.com/wallyqs/dhall.go"
 )
 
 // TaggedMessage is the struct we want to unmarshal from Dhall

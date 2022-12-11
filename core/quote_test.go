@@ -3,7 +3,7 @@ package core
 import (
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
-	"github.com/philandstuff/dhall-golang/v6/term"
+	"github.com/wallyqs/dhall.go/term"
 )
 
 var _ = DescribeTable("Quote",

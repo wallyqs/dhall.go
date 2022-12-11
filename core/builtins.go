@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/philandstuff/dhall-golang/v6/term"
+	"github.com/wallyqs/dhall.go/term"
 )
 
 func (naturalBuild) Call(x Value) Value {
