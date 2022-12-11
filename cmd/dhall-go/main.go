@@ -6,11 +6,14 @@ import (
 	"log"
 	"os"
 
+	"encoding/json"
+	"github.com/urfave/cli/v2" // imports as package "cli"
+	"github.com/wallyqs/dhall.go"
 	"github.com/wallyqs/dhall.go/binary"
 	"github.com/wallyqs/dhall.go/core"
 	"github.com/wallyqs/dhall.go/imports"
 	"github.com/wallyqs/dhall.go/parser"
-	"github.com/urfave/cli/v2" // imports as package "cli"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -63,5 +66,33 @@ func cmdDebug(c *cli.Context) error {
 		return err
 	}
 	fmt.Printf("decoded as %+v\n", final)
+	return nil
+}
+
+func cmdYAML(c *cli.Context) error {
+	var data interface{}
+	err := dhall.UnmarshalReader("-", os.Stdin, &data)
+	if err != nil {
+		return err
+	}
+	b, err := yaml.Marshal(data)
+	if err != nil {
+		return err
+	}
+	fmt.Print(string(b))
+	return nil
+}
+
+func cmdJSON(c *cli.Context) error {
+	var data interface{}
+	err := dhall.UnmarshalReader("-", os.Stdin, &data)
+	if err != nil {
+		return err
+	}
+	b, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return err
+	}
+	fmt.Print(string(b))
 	return nil
 }
