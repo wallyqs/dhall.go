@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/philandstuff/dhall-golang/v6/term"
+	"github.com/wallyqs/dhall.go/term"
 )
 
 // GomegaMatcher is a copy of

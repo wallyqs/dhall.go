@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 
-	"github.com/philandstuff/dhall-golang/v6/core"
+	"github.com/wallyqs/dhall.go/core"
 )
 
 // SemanticHash returns the semantic hash of an evaluated expression.

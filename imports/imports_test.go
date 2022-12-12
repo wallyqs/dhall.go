@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	. "github.com/philandstuff/dhall-golang/v6/imports"
-	. "github.com/philandstuff/dhall-golang/v6/internal"
-	. "github.com/philandstuff/dhall-golang/v6/term"
+	. "github.com/wallyqs/dhall.go/imports"
+	. "github.com/wallyqs/dhall.go/internal"
+	. "github.com/wallyqs/dhall.go/term"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

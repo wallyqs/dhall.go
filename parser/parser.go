@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/philandstuff/dhall-golang/v6/parser/internal"
-	"github.com/philandstuff/dhall-golang/v6/term"
+	"github.com/wallyqs/dhall.go/parser/internal"
+	"github.com/wallyqs/dhall.go/term"
 )
 
 //go:generate pigeon -optimize-grammar -optimize-parser -o internal/dhall.go internal/dhall.peg

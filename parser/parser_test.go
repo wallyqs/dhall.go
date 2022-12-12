@@ -3,9 +3,9 @@ package parser_test
 import (
 	"math"
 
-	. "github.com/philandstuff/dhall-golang/v6/internal"
-	"github.com/philandstuff/dhall-golang/v6/parser"
-	. "github.com/philandstuff/dhall-golang/v6/term"
+	. "github.com/wallyqs/dhall.go/internal"
+	"github.com/wallyqs/dhall.go/parser"
+	. "github.com/wallyqs/dhall.go/term"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
