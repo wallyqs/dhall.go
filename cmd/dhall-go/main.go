@@ -1,98 +1,94 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
+	"flag"
 	"fmt"
-	"log"
 	"os"
 
-	"encoding/json"
-	"github.com/urfave/cli/v2" // imports as package "cli"
 	"github.com/wallyqs/dhall.go"
-	"github.com/wallyqs/dhall.go/binary"
-	"github.com/wallyqs/dhall.go/core"
-	"github.com/wallyqs/dhall.go/imports"
-	"github.com/wallyqs/dhall.go/parser"
 	"gopkg.in/yaml.v2"
 )
 
+const version = "0.1.0"
+
+func showVersionAndExit() {
+	fmt.Printf("dhall-go v%s\n", version)
+	os.Exit(0)
+}
+
+type config struct {
+	showVersion  bool
+	showHelp     bool
+	outputFormat string
+	file         string
+}
+
+const helpText = `dhall-go
+
+Examples:
+  # Output as YAML
+  dhall-go -f file.dhall -o yaml
+
+  # Output as JSON
+  dhall-go -f file.dhall -o json
+
+Global Flags:
+  -h, --help                    Show context-sensitive help.
+      --version                 Show application version.
+`
+
 func main() {
-	app := &cli.App{
-		Name:  "dhall-golang",
-		Usage: "Dhall implemented in Go",
-		Commands: []*cli.Command{
-			{
-				Name:   "json",
-				Usage:  "output Dhall code as JSON",
-				Action: cmdJSON,
-			},
-			{
-				Name:   "yaml",
-				Usage:  "output Dhall code as YAML",
-				Action: cmdYAML,
-			},
-		},
-		Action: cmdDebug,
+	fs := flag.NewFlagSet("dhall-go", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Printf("usage: dhall-go\n")
+		fs.PrintDefaults()
+		fmt.Println()
+	}
+	cfg := &config{}
+	fs.BoolVar(&cfg.showHelp, "h", false, "Show help")
+	fs.BoolVar(&cfg.showHelp, "help", false, "Show help")
+	fs.BoolVar(&cfg.showVersion, "version", false, "Show version")
+	fs.BoolVar(&cfg.showVersion, "v", false, "Show version")
+	fs.StringVar(&cfg.file, "f", "", "Configuration file")
+	fs.StringVar(&cfg.file, "file", "", "Configuration file")
+	fs.StringVar(&cfg.outputFormat, "o", "yaml", "Output format (yaml, json)")
+	fs.StringVar(&cfg.outputFormat, "output", "yaml", "Output format (yaml, json)")
+	fs.Parse(os.Args[1:])
+
+	if cfg.showHelp {
+		fmt.Fprintln(os.Stderr, helpText)
+		os.Exit(0)
 	}
 
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
+	if cfg.showVersion {
+		showVersionAndExit()
 	}
-}
 
-// cmdDebug is the original scrappy debug command
-func cmdDebug(c *cli.Context) error {
-	expr, err := parser.ParseReader("-", os.Stdin)
-	if err != nil {
-		return err
-	}
-	resolvedExpr, err := imports.Load(expr)
-	if err != nil {
-		return err
-	}
-	inferredType, err := core.TypeOf(resolvedExpr)
-	if err != nil {
-		return err
-	}
-	fmt.Fprint(os.Stderr, inferredType)
-	fmt.Fprintln(os.Stderr)
-	fmt.Println(core.Eval(resolvedExpr))
-
-	var buf = new(bytes.Buffer)
-	binary.EncodeAsCbor(buf, core.QuoteAlphaNormal(core.Eval(resolvedExpr)))
-	final, err := binary.DecodeAsCbor(buf)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("decoded as %+v\n", final)
-	return nil
-}
-
-func cmdYAML(c *cli.Context) error {
 	var data interface{}
-	err := dhall.UnmarshalReader("-", os.Stdin, &data)
+	err := dhall.UnmarshalFile(cfg.file, &data)
 	if err != nil {
-		return err
+		fmt.Fprintln(os.Stderr, fmt.Errorf("dhall-go: %w", err))
+		os.Exit(1)
 	}
-	b, err := yaml.Marshal(data)
-	if err != nil {
-		return err
-	}
-	fmt.Print(string(b))
-	return nil
-}
 
-func cmdJSON(c *cli.Context) error {
-	var data interface{}
-	err := dhall.UnmarshalReader("-", os.Stdin, &data)
-	if err != nil {
-		return err
+	var b []byte
+	switch cfg.outputFormat {
+	case "yaml":
+		b, err = yaml.Marshal(data)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, fmt.Errorf("dhall-go: %w", err))
+			os.Exit(1)
+		}
+	case "json":
+		b, err = json.MarshalIndent(data, "", "  ")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, fmt.Errorf("dhall-go: %w", err))
+			os.Exit(1)
+		}
+	default:
+		fmt.Fprintln(os.Stderr, fmt.Errorf("dhall-go: undefined format %s", cfg.outputFormat))
+		os.Exit(1)
 	}
-	b, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		return err
-	}
-	fmt.Print(string(b))
-	return nil
+	fmt.Println(string(b))
 }

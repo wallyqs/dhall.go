@@ -6,17 +6,13 @@ require (
 	github.com/onsi/ginkgo v1.7.0
 	github.com/onsi/gomega v1.4.3
 	github.com/pkg/errors v0.8.1
-	github.com/urfave/cli/v2 v2.2.0
 	gopkg.in/yaml.v2 v2.2.2
 )
 
 require (
-	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
 	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/russross/blackfriday/v2 v2.0.1 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
